@@ -37,7 +37,16 @@ if nargin < 6, p = 1;    end
     disp('---------- Building graph and forming initial clusters with l-links ---------');
     [graphW, NNIndex] = gacBuildDigraph_c(distance_matrix, K, a);
     initialClusters = gacBuildLlinks_cwarpper(distance_matrix, p, NNIndex);
+    N = size(distance_matrix, 1);
     clear distance_matrix NNIndex
+    
+    if numel(initialClusters) <= groupNumber
+        clusteredLabels = zeros(1, N);
+        for i = 1:numel(initialClusters)
+            clusteredLabels(initialClusters{i}) = i;
+        end
+        return;
+    end
 
     disp('-------------------------- Zeta merging --------------------------');
         if usingKcCluster
